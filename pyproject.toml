@@ -10,8 +10,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/wangx-u/logits"
-Repository = "https://github.com/wangx-u/logits"
+Homepage = "https://github.com/GradientHQ/logits"
+Repository = "https://github.com/GradientHQ/logits"
 
 [dependency-groups]
 dev = [
