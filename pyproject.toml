@@ -1,0 +1,34 @@
+[project]
+name = "logits"
+version = "0.1.0"
+description = "The Logits Python SDK facade over the official Tinker SDK"
+readme = "README.md"
+authors = [{ name = "Logits authors" }]
+requires-python = ">=3.11"
+dependencies = [
+    "tinker>=0.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/wangx-u/logits"
+Repository = "https://github.com/wangx-u/logits"
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "respx",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/logits"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.uv.sources]
+tinker = { path = "../sdk" }
