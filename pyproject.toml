@@ -3,19 +3,34 @@ name = "logits"
 version = "0.1.0"
 description = "The Logits Python SDK facade over the official Tinker SDK"
 readme = "README.md"
-authors = [{ name = "Logits authors" }]
+authors = [{ name = "Gradient", email = "support@gradient.ai" }]
+license = "Apache-2.0"
 requires-python = ">=3.11"
 dependencies = [
-    "tinker>=0.9.0",
+    "tinker>=0.21,<0.22",
+]
+keywords = ["logits", "sdk", "tinker", "training", "sampling"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
 ]
 
 [project.urls]
 Homepage = "https://github.com/GradientHQ/logits"
 Repository = "https://github.com/GradientHQ/logits"
+Issues = "https://github.com/GradientHQ/logits/issues"
+Documentation = "https://github.com/GradientHQ/logits#readme"
 
 [dependency-groups]
 dev = [
     "pytest",
+    "pytest-timeout",
     "respx",
 ]
 
@@ -29,6 +44,5 @@ packages = ["src/logits"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-
-[tool.uv.sources]
-tinker = { path = "../sdk" }
+timeout = 15
+timeout_method = "thread"

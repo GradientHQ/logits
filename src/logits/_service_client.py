@@ -156,34 +156,54 @@ class ServiceClient(tinker.ServiceClient):
         return self._wrap_training_client(training_client)
 
     def create_training_client_from_state(
-        self, path: str, user_metadata: dict[str, str] | None = None
+        self,
+        path: str,
+        user_metadata: dict[str, str] | None = None,
+        weights_access_token: str | None = None,
     ) -> LogitsTrainingClient:
         training_client = super().create_training_client_from_state(
-            path, user_metadata=user_metadata
+            path,
+            user_metadata=user_metadata,
+            weights_access_token=weights_access_token,
         )
         return self._wrap_training_client(training_client)
 
     async def create_training_client_from_state_async(
-        self, path: str, user_metadata: dict[str, str] | None = None
+        self,
+        path: str,
+        user_metadata: dict[str, str] | None = None,
+        weights_access_token: str | None = None,
     ) -> LogitsTrainingClient:
         training_client = await super().create_training_client_from_state_async(
-            path, user_metadata=user_metadata
+            path,
+            user_metadata=user_metadata,
+            weights_access_token=weights_access_token,
         )
         return self._wrap_training_client(training_client)
 
     def create_training_client_from_state_with_optimizer(
-        self, path: str, user_metadata: dict[str, str] | None = None
+        self,
+        path: str,
+        user_metadata: dict[str, str] | None = None,
+        weights_access_token: str | None = None,
     ) -> LogitsTrainingClient:
         training_client = super().create_training_client_from_state_with_optimizer(
-            path, user_metadata=user_metadata
+            path,
+            user_metadata=user_metadata,
+            weights_access_token=weights_access_token,
         )
         return self._wrap_training_client(training_client)
 
     async def create_training_client_from_state_with_optimizer_async(
-        self, path: str, user_metadata: dict[str, str] | None = None
+        self,
+        path: str,
+        user_metadata: dict[str, str] | None = None,
+        weights_access_token: str | None = None,
     ) -> LogitsTrainingClient:
         training_client = await super().create_training_client_from_state_with_optimizer_async(
-            path, user_metadata=user_metadata
+            path,
+            user_metadata=user_metadata,
+            weights_access_token=weights_access_token,
         )
         return self._wrap_training_client(training_client)
 
