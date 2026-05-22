@@ -1,7 +1,7 @@
 [project]
-name = "logits"
+name = "logits-sdk"
 version = "0.1.0"
-description = "The Logits Python SDK facade over the official Tinker SDK"
+description = "The Logits Python SDK facade over the official Tinker SDK (import as `logits`)"
 readme = "README.md"
 authors = [{ name = "Gradient", email = "support@gradient.ai" }]
 license = "Apache-2.0"
@@ -9,7 +9,7 @@ requires-python = ">=3.11"
 dependencies = [
     "tinker>=0.21,<0.22",
 ]
-keywords = ["logits", "sdk", "tinker", "training", "sampling"]
+keywords = ["logits", "logits-sdk", "tinker", "training", "sampling"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
