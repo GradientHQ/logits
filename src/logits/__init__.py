@@ -7,6 +7,7 @@ from tinker import *  # noqa: F403
 
 from . import types
 from ._config import (
+    DEFAULT_BASE_URL,
     LOGITS_API_KEY_ENV,
     LOGITS_BASE_URL_ENV,
     TINKER_API_KEY_ENV,
@@ -28,6 +29,7 @@ __all__ = [
     "ServiceClient",
     "TrainingClient",
     "create_service_client",
+    "DEFAULT_BASE_URL",
     "LOGITS_API_KEY_ENV",
     "LOGITS_BASE_URL_ENV",
     "TINKER_API_KEY_ENV",

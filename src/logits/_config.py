@@ -15,6 +15,7 @@ LOGITS_BASE_URL_ENV = "LOGITS_BASE_URL"
 TINKER_API_KEY_ENV = "TINKER_API_KEY"
 TINKER_BASE_URL_ENV = "TINKER_BASE_URL"
 API_KEY_HEADER = "X-API-Key"
+DEFAULT_BASE_URL = "https://api.logits.dev"
 
 _logger = logging.getLogger("logits")
 
@@ -134,7 +135,7 @@ def resolve_api_key(
 def resolve_base_url(base_url: str | None = None) -> str | None:
     if base_url is not None:
         return base_url
-    return _get_first_env(LOGITS_BASE_URL_ENV, TINKER_BASE_URL_ENV)
+    return _get_first_env(LOGITS_BASE_URL_ENV, TINKER_BASE_URL_ENV) or DEFAULT_BASE_URL
 
 
 def resolve_service_client_kwargs(
