@@ -1,6 +1,9 @@
 name: Publish
 
 on:
+  push:
+    tags:
+      - "v*"  # pushing a release tag (e.g. v0.1.1) publishes to PyPI
   release:
     types: [published]
   workflow_dispatch:
@@ -41,7 +44,7 @@ jobs:
           python -m twine check dist/*
 
       - name: Guard — version not already on PyPI / tag matches build
-        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.repository == 'pypi')
+        if: github.event_name == 'release' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.repository == 'pypi')
         run: |
           VER=$(ls dist/*.whl | sed -E 's#.*/logits_sdk-([^-]+)-.*#\1#')
           echo "Built version: $VER"
@@ -86,7 +89,7 @@ jobs:
   publish-pypi:
     name: Publish to PyPI
     needs: build
-    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.repository == 'pypi')
+    if: github.event_name == 'release' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.repository == 'pypi')
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
