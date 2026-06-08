@@ -12,17 +12,7 @@ pip install logits-sdk
 
 ## Authentication
 
-Set a Logits API key before creating clients:
-
-```bash
-export LOGITS_API_KEY="your-api-key"
-```
-
-For non-default deployments, set a base URL:
-
-```bash
-export LOGITS_BASE_URL="https://api.example.com"
-```
+The SDK reads your Logits API key from the `LOGITS_API_KEY` environment variable.
 
 ## Usage
 

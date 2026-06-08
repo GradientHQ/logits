@@ -1,7 +1,7 @@
 [project]
 name = "logits-sdk"
-version = "0.1.0"
-description = "The Logits Python SDK facade over the official Tinker SDK (import as `logits`)"
+dynamic = ["version"]
+description = "The official Python SDK for the Logits platform (import as `logits`)"
 readme = "README.md"
 authors = [{ name = "Gradient", email = "support@gradient.ai" }]
 license = "Apache-2.0"
@@ -35,8 +35,18 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
+
+# Version comes from the git tag (e.g. tag `v0.1.2` -> version `0.1.2`).
+# Never edit a version by hand; tag the release commit and CI builds from it.
+[tool.hatch.version]
+source = "vcs"
+
+# Dev builds (commits after a tag) get `0.1.2.dev3` with no `+gSHA` local
+# segment, so TestPyPI accepts them. Release builds (tag on HEAD) stay clean.
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/logits"]

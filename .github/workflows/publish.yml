@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history + tags so hatch-vcs can resolve the version
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -37,6 +39,21 @@ jobs:
           python -m pip install build twine
           python -m build
           python -m twine check dist/*
+
+      - name: Guard — version not already on PyPI / tag matches build
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.repository == 'pypi')
+        run: |
+          VER=$(ls dist/*.whl | sed -E 's#.*/logits_sdk-([^-]+)-.*#\1#')
+          echo "Built version: $VER"
+          case "$VER" in
+            *.dev*|*+*) echo "::error::refusing to publish a dev/local version ($VER) — tag a clean release commit"; exit 1 ;;
+          esac
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME#v}" != "$VER" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match built version $VER"; exit 1
+          fi
+          if curl -sf "https://pypi.org/pypi/logits-sdk/${VER}/json" >/dev/null; then
+            echo "::error::logits-sdk $VER is already on PyPI — bump the tag"; exit 1
+          fi
 
       - name: Upload distributions
         uses: actions/upload-artifact@v4
