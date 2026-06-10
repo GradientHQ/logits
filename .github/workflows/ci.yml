@@ -5,10 +5,18 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Test Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -31,12 +39,16 @@ jobs:
           python -m pip install -e .
           python -m pip install pytest pytest-timeout respx
 
+      - name: Check installed dependencies
+        run: python -m pip check
+
       - name: Run tests
         run: pytest
 
   package:
     name: Build package
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Check out repository

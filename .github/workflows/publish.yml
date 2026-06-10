@@ -46,7 +46,8 @@ jobs:
       - name: Guard — version not already on PyPI / tag matches build
         if: github.event_name == 'release' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.repository == 'pypi')
         run: |
-          VER=$(ls dist/*.whl | sed -E 's#.*/logits_sdk-([^-]+)-.*#\1#')
+          WHEEL=$(find dist -maxdepth 1 -name '*.whl' -print -quit)
+          VER=$(printf '%s\n' "$WHEEL" | sed -E 's#.*/logits_sdk-([^-]+)-.*#\1#')
           echo "Built version: $VER"
           case "$VER" in
             *.dev*|*+*) echo "::error::refusing to publish a dev/local version ($VER) — tag a clean release commit"; exit 1 ;;
