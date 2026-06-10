@@ -185,6 +185,41 @@ class RestClient(TinkerRestClient):
 
         return self.holder.run_coroutine_threadsafe(_coro())
 
+    def _resolve_and_delete_submit(
+        self, training_run_id: types.ModelID, segment: str
+    ) -> AwaitableConcurrentFuture[None]:
+        async def _coro() -> None:
+            checkpoint_id = await self._resolve_checkpoint_id(training_run_id, segment)
+
+            async def _send() -> None:
+                with self.holder.aclient(ClientConnectionPoolType.TRAIN) as client:
+                    await client.delete(
+                        f"/api/v1/training_runs/{training_run_id}/checkpoints/{checkpoint_id}",
+                        cast_to=NoneType,
+                    )
+
+            await self.holder.execute_with_retries(_send)
+
+        return self.holder.run_coroutine_threadsafe(_coro())
+
+    def _resolve_and_set_ttl_submit(
+        self, training_run_id: types.ModelID, segment: str, ttl_seconds: int | None
+    ) -> AwaitableConcurrentFuture[None]:
+        async def _coro() -> None:
+            checkpoint_id = await self._resolve_checkpoint_id(training_run_id, segment)
+
+            async def _send() -> None:
+                with self.holder.aclient(ClientConnectionPoolType.TRAIN) as client:
+                    await client.put(
+                        f"/api/v1/training_runs/{training_run_id}/checkpoints/{checkpoint_id}/ttl",
+                        body={"ttl_seconds": ttl_seconds},
+                        cast_to=NoneType,
+                    )
+
+            await self.holder.execute_with_retries(_send)
+
+        return self.holder.run_coroutine_threadsafe(_coro())
+
     def publish_checkpoint_from_tinker_path(self, tinker_path: str) -> ConcurrentFuture[None]:
         training_run_id, segment = self._parse_checkpoint_path(tinker_path)
         return self._resolve_and_set_publish_submit(
@@ -221,12 +256,12 @@ class RestClient(TinkerRestClient):
         return await self.get_training_run_async(training_run_id, access_scope=access_scope)
 
     def delete_checkpoint_from_tinker_path(self, tinker_path: str) -> ConcurrentFuture[None]:
-        training_run_id, checkpoint_id = self._parse_checkpoint_path(tinker_path)
-        return self._delete_checkpoint_submit(training_run_id, checkpoint_id).future()
+        training_run_id, segment = self._parse_checkpoint_path(tinker_path)
+        return self._resolve_and_delete_submit(training_run_id, segment).future()
 
     async def delete_checkpoint_from_tinker_path_async(self, tinker_path: str) -> None:
-        training_run_id, checkpoint_id = self._parse_checkpoint_path(tinker_path)
-        await self._delete_checkpoint_submit(training_run_id, checkpoint_id)
+        training_run_id, segment = self._parse_checkpoint_path(tinker_path)
+        await self._resolve_and_delete_submit(training_run_id, segment)
 
     def get_checkpoint_archive_url_from_tinker_path(
         self, tinker_path: str
@@ -243,13 +278,13 @@ class RestClient(TinkerRestClient):
     def set_checkpoint_ttl_from_tinker_path(
         self, tinker_path: str, ttl_seconds: int | None
     ) -> ConcurrentFuture[None]:
-        training_run_id, checkpoint_id = self._parse_checkpoint_path(tinker_path)
-        return self._set_checkpoint_ttl_submit(
-            training_run_id, checkpoint_id, ttl_seconds
+        training_run_id, segment = self._parse_checkpoint_path(tinker_path)
+        return self._resolve_and_set_ttl_submit(
+            training_run_id, segment, ttl_seconds
         ).future()
 
     async def set_checkpoint_ttl_from_tinker_path_async(
         self, tinker_path: str, ttl_seconds: int | None
     ) -> None:
-        training_run_id, checkpoint_id = self._parse_checkpoint_path(tinker_path)
-        await self._set_checkpoint_ttl_submit(training_run_id, checkpoint_id, ttl_seconds)
+        training_run_id, segment = self._parse_checkpoint_path(tinker_path)
+        await self._resolve_and_set_ttl_submit(training_run_id, segment, ttl_seconds)
