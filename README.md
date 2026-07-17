@@ -14,6 +14,11 @@ pip install logits-sdk
 
 The SDK reads your Logits API key from the `LOGITS_API_KEY` environment variable.
 
+## Telemetry
+
+Tinker telemetry is disabled by default. To opt in, set `TINKER_TELEMETRY=1`
+before importing `logits`.
+
 ## Usage
 
 ```python

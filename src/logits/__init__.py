@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+import os as _os
 import typing as _t
+
+# Tinker enables telemetry by default. Logits keeps it off unless callers
+# explicitly opt in before importing this package.
+_os.environ.setdefault("TINKER_TELEMETRY", "0")
 
 import tinker as _tinker
 from tinker import *  # noqa: F403
