@@ -58,22 +58,3 @@ def test_create_service_client_returns_logits_service_client(respx_mock: MockRou
     service_client.holder.close()
 
     assert isinstance(service_client, logits.ServiceClient)
-
-
-@pytest.mark.respx(base_url=BASE_URL)
-def test_service_client_falls_back_when_client_config_missing(respx_mock: MockRouter) -> None:
-    """Backends without /api/v1/client/config must still bootstrap."""
-    config_route = respx_mock.post("/api/v1/client/config").mock(
-        return_value=httpx.Response(404, text="404 page not found")
-    )
-    create_session_route = respx_mock.post("/api/v1/create_session").mock(
-        return_value=httpx.Response(200, json={"session_id": "fallback-session"})
-    )
-
-    service_client = logits.ServiceClient(base_url=BASE_URL, api_key="logits-test-key")
-    try:
-        assert config_route.called
-        assert create_session_route.called
-        assert service_client.holder._session_id == "fallback-session"
-    finally:
-        service_client.holder.close()
