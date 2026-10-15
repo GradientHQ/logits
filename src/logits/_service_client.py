@@ -39,6 +39,8 @@ class ServiceClient(tinker.ServiceClient):
 
     @staticmethod
     def _wrap_training_client(training_client: tinker.TrainingClient) -> LogitsTrainingClient:
+        if isinstance(training_client, LogitsTrainingClient):
+            return training_client
         # tinker.TrainingClient stores the model seq id in a private field.
         # We only need it to construct an equivalent wrapper instance.
         return LogitsTrainingClient(
